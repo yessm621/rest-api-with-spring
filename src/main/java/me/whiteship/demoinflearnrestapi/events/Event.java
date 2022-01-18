@@ -3,8 +3,10 @@ package me.whiteship.demoinflearnrestapi.events;
 import ch.qos.logback.classic.net.server.HardenedLoggingEventInputStream;
 import lombok.*;
 
+import javax.persistence.*;
 import java.time.LocalDateTime;
 
+@Entity
 @Builder
 @AllArgsConstructor
 @NoArgsConstructor
@@ -13,6 +15,8 @@ import java.time.LocalDateTime;
 @EqualsAndHashCode(of = "id")
 public class Event {
 
+    @Id
+    @GeneratedValue
     private Integer id;
     private String name;
     private String description;
@@ -26,5 +30,7 @@ public class Event {
     private int limitIfEnrollment;
     private boolean offline;
     private boolean free;
+
+    @Enumerated(EnumType.STRING)
     private EventStatus eventStatus;
 }
