@@ -1,5 +1,6 @@
 package me.whiteship.demoinflearnrestapi.events;
 
+import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.hamcrest.Matchers;
 import org.junit.Test;
@@ -35,10 +36,10 @@ public class EventControllerTests {
         EventDto event = EventDto.builder()
                 .name("Spring")
                 .description("REST API development with Spring")
-                .beginEnrollmentDatetime(LocalDateTime.of(2022, 1, 18, 14, 21, 22))
-                .closeEnrollmentDatetime(LocalDateTime.of(2022, 1, 19, 14, 21, 22))
-                .beginEventDatetime(LocalDateTime.of(2022, 1, 25, 14, 21, 22))
-                .endEventDatetime(LocalDateTime.of(2022, 1, 26, 14, 21, 22))
+                .beginEnrollmentDateTime(LocalDateTime.of(2022, 1, 18, 14, 21, 22))
+                .closeEnrollmentDateTime(LocalDateTime.of(2022, 1, 19, 14, 21, 22))
+                .beginEventDateTime(LocalDateTime.of(2022, 1, 25, 14, 21, 22))
+                .endEventDateTime(LocalDateTime.of(2022, 1, 26, 14, 21, 22))
                 .basePrice(100)
                 .maxPrice(200)
                 .limitIfEnrollment(100)
@@ -65,10 +66,10 @@ public class EventControllerTests {
                 .id(100)
                 .name("Spring")
                 .description("REST API development with Spring")
-                .beginEnrollmentDatetime(LocalDateTime.of(2022, 1, 18, 14, 21, 22))
-                .closeEnrollmentDatetime(LocalDateTime.of(2022, 1, 19, 14, 21, 22))
-                .beginEventDatetime(LocalDateTime.of(2022, 1, 25, 14, 21, 22))
-                .endEventDatetime(LocalDateTime.of(2022, 1, 26, 14, 21, 22))
+                .beginEnrollmentDateTime(LocalDateTime.of(2022, 1, 18, 14, 21, 22))
+                .closeEnrollmentDateTime(LocalDateTime.of(2022, 1, 19, 14, 21, 22))
+                .beginEventDateTime(LocalDateTime.of(2022, 1, 25, 14, 21, 22))
+                .endEventDateTime(LocalDateTime.of(2022, 1, 26, 14, 21, 22))
                 .basePrice(100)
                 .maxPrice(200)
                 .limitIfEnrollment(100)
@@ -86,4 +87,34 @@ public class EventControllerTests {
                 .andExpect(status().isBadRequest());
     }
 
+    @Test
+    public void createEvent_Bad_Request_Empty_Input() throws Exception {
+        EventDto eventDto = EventDto.builder().build();
+
+        mockMvc.perform(post("/api/events/")
+                .contentType(MediaType.APPLICATION_JSON)
+                .content(objectMapper.writeValueAsString(eventDto)))
+                .andExpect(status().isBadRequest());
+    }
+
+    @Test
+    public void createEvent_Bad_Request_Wrong_Input() throws Exception {
+        EventDto eventDto = EventDto.builder()
+                .name("Spring")
+                .description("REST API development with Spring")
+                .beginEnrollmentDateTime(LocalDateTime.of(2022, 1, 26, 14, 21, 22))
+                .closeEnrollmentDateTime(LocalDateTime.of(2022, 1, 25, 14, 21, 22))
+                .beginEventDateTime(LocalDateTime.of(2022, 1, 24, 14, 21, 22))
+                .endEventDateTime(LocalDateTime.of(2022, 1, 23, 14, 21, 22))
+                .basePrice(10000)
+                .maxPrice(200)
+                .limitIfEnrollment(100)
+                .location("강남역")
+                .build();
+
+        mockMvc.perform(post("/api/events/")
+                .contentType(MediaType.APPLICATION_JSON)
+                .content(objectMapper.writeValueAsString(eventDto)))
+                .andExpect(status().isBadRequest());
+    }
 }
