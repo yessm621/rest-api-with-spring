@@ -61,7 +61,10 @@ public class EventControllerTests {
                 .andExpect(jsonPath("id").value(Matchers.not(100)))
                 .andExpect(jsonPath("free").value(false))
                 .andExpect(jsonPath("offline").value(true))
-                .andExpect(jsonPath("eventStatus").value(Matchers.not(EventStatus.DRAFT)));
+                .andExpect(jsonPath("eventStatus").value(Matchers.not(EventStatus.DRAFT)))
+                .andExpect(jsonPath("_links.self").exists()) // 3가지의 링크가 응답으로 오길 기다
+                .andExpect(jsonPath("_links.query-events").exists())
+                .andExpect(jsonPath("_links.update-event").exists());
     }
 
     @Test
