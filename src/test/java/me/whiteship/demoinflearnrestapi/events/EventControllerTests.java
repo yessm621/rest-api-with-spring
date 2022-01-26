@@ -194,7 +194,7 @@ public class EventControllerTests {
                 .andExpect(jsonPath("_links.index").exists());
     }
 
-    /*@Test
+    @Test
     @DisplayName("30개의 이벤트를 10개씩 두번째 페이지 조회하기")
     public void queryEvents() throws Exception {
         //Given
@@ -210,7 +210,51 @@ public class EventControllerTests {
         )
                 .andDo(print())
                 .andExpect(status().isOk())
-                .andExpect(jsonPath("page").exists());
+                .andExpect(jsonPath("page").exists())
+                .andExpect(jsonPath("_embedded.eventList[0]._links.self").exists())
+                .andExpect(jsonPath("_links.self").exists())
+                .andExpect(jsonPath("_links.profile").exists())
+                .andDo(document("query-events",
+                        links(
+                                linkWithRel("first").description("link to first"),
+                                linkWithRel("prev").description("link to prev"),
+                                linkWithRel("self").description("link to self"),
+                                linkWithRel("next").description("link to next"),
+                                linkWithRel("last").description("link to last"),
+                                linkWithRel("profile").description("link to profile")
+                        ),
+                        responseHeaders(
+                                headerWithName(HttpHeaders.CONTENT_TYPE).description("content type")
+                        ),
+                        responseFields(
+//                                fieldWithPath("_embedded.eventList").description("event list"),
+                                fieldWithPath("_embedded.eventList[].id").description("identifier of event"),
+                                fieldWithPath("_embedded.eventList[].name").description("Name of event"),
+                                fieldWithPath("_embedded.eventList[].description").description("description of event"),
+                                fieldWithPath("_embedded.eventList[].beginEnrollmentDateTime").description("date time of begin of event"),
+                                fieldWithPath("_embedded.eventList[].closeEnrollmentDateTime").description("date time of close of event"),
+                                fieldWithPath("_embedded.eventList[].beginEventDateTime").description("date time of begin of event"),
+                                fieldWithPath("_embedded.eventList[].endEventDateTime").description("date time of end of event"),
+                                fieldWithPath("_embedded.eventList[].location").description("location of event"),
+                                fieldWithPath("_embedded.eventList[].basePrice").description("base price of event"),
+                                fieldWithPath("_embedded.eventList[].maxPrice").description("max price of event"),
+                                fieldWithPath("_embedded.eventList[].limitIfEnrollment").description("limit of enrollment"),
+                                fieldWithPath("_embedded.eventList[].free").description("it tells is this event is free or not"),
+                                fieldWithPath("_embedded.eventList[].offline").description("it tells is this offline is free or not"),
+                                fieldWithPath("_embedded.eventList[].eventStatus").description("event status"),
+                                fieldWithPath("_embedded.eventList[]._links.self.href").description("link to self"),
+                                fieldWithPath("_links.first.href").description("처음 페이지"),
+                                fieldWithPath("_links.prev.href").description("이전 페이지"),
+                                fieldWithPath("_links.self.href").description("현재 페이지"),
+                                fieldWithPath("_links.next.href").description("다음 페이지"),
+                                fieldWithPath("_links.last.href").description("마지막 페이지"),
+                                fieldWithPath("_links.profile.href").description("link to profile"),
+                                fieldWithPath("page.size").description("한 페이지 당 게시물 개수"),
+                                fieldWithPath("page.totalElements").description("총 게시물 수"),
+                                fieldWithPath("page.totalPages").description("총 페이지 수"),
+                                fieldWithPath("page.number").description("현재 페이지 번호")
+                        )
+                ));
     }
 
     private void generateEvent(int index) {
@@ -219,5 +263,5 @@ public class EventControllerTests {
                 .description("test event")
                 .build();
         eventRepository.save(event);
-    }*/
+    }
 }
